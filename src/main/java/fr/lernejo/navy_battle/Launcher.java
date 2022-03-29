@@ -7,7 +7,6 @@ public class Launcher {
         int port = Integer.parseInt(args[0]);
         if (args.length < 1) {
             System.err.println("Arguments are missing!");
-            return;
         } else if (args.length == 1) {
             Server server = new Server(port);
             server.serverInit();
