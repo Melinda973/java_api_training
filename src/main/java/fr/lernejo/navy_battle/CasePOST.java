@@ -56,17 +56,19 @@ public class CasePOST implements HttpHandler{
         return false;
     }
 
-    private JSONObject inputStringTOJSON(InputStream inputStream) {
-        try {
-            BufferedReader stream = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-            StringBuilder response = new StringBuilder();
-            String inputStr;
-            while ((inputStr = stream.readLine()) != null)
-                response.append(inputStr);
-            JSONObject obj = new JSONObject(response.toString());
-            return obj;
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
+    public JSONObject inputStringTOJSON(InputStream inputStream) {
+        if (inputStream != null) {
+            try {
+                BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                StringBuilder responseStrBuilder = new StringBuilder();
+                String inputStr;
+                while ((inputStr = streamReader.readLine()) != null)
+                    responseStrBuilder.append(inputStr);
+                JSONObject jsonObject = new JSONObject(responseStrBuilder.toString());
+                return jsonObject;
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
