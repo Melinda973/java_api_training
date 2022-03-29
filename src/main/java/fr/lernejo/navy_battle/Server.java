@@ -18,6 +18,7 @@ public class Server {
         HttpServer server = HttpServer.create(new InetSocketAddress(this.port), 0);
         server.setExecutor(Executors.newFixedThreadPool(1)); // creates an executor of 1 thread
         server.createContext("/ping", new PingHandler());
+        server.createContext("/api/game/start", new CasePOST());
         server.start();
     }
 }
