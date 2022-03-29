@@ -31,7 +31,7 @@ class FireGameTest {
             CompletableFuture<HttpResponse<String>> completableFutureGet = client.sendAsync(requestGet, HttpResponse.BodyHandlers.ofString());
             completableFutureGet.thenApplyAsync(HttpResponse::headers);
             HttpResponse<String> responseGET = completableFutureGet.join();
-            Assertions.assertEquals(responseGET.statusCode(), 200);
+            Assertions.assertEquals(responseGET.statusCode(), 202);
             Assertions.assertEquals(responseGET.body(), "{\"consequence\":\"miss\",\"shipLeft\":false}");
 
             HttpRequest requestGetManque = HttpRequest.newBuilder().uri(URI.create("http://localhost:9097/api/game/fire")).build();

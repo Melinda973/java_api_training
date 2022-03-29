@@ -28,7 +28,7 @@ class CasePOSTTest {
             CompletableFuture<HttpResponse<String>> completableFuturePOST = client.sendAsync(requetePost, HttpResponse.BodyHandlers.ofString());
             completableFuturePOST.thenApplyAsync(HttpResponse::headers);
             HttpResponse<String> responsePOST = completableFuturePOST.join();
-            Assertions.assertEquals(responsePOST.statusCode(),200);
+            Assertions.assertEquals(responsePOST.statusCode(),202);
             Assertions.assertEquals(responsePOST.body(),"{\"id\":\"xxx\",\"message\":\"Start ressus\",\"url\":\"http://localhost:9096\"}");
 
             HttpRequest requestPOSTManque = HttpRequest.newBuilder()

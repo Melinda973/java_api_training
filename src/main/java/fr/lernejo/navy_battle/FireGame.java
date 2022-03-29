@@ -30,7 +30,7 @@ public class FireGame implements HttpHandler {
         }
         else if (IsBodyOK(exchange)) {
             String body = buildBody("miss", false);
-            sendResponse(exchange, body, 200);
+            sendResponse(exchange, body, 202);
         }
         else{
             sendResponse(exchange, "", 400);
