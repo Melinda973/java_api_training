@@ -15,6 +15,7 @@ public class Server {
     }
 
     public void serverInit() throws IOException {
+        System.out.println("Server initialization");
         HttpServer server = HttpServer.create(new InetSocketAddress(this.port), 0);
         server.setExecutor(Executors.newFixedThreadPool(1)); // creates an executor of 1 thread
         server.createContext("/ping", new PingHandler());

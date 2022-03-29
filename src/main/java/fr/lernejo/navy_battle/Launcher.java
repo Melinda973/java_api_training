@@ -7,9 +7,17 @@ public class Launcher {
         if (args.length < 1) {
             System.err.println("Arguments are missing!");
             return;
+        } else if (args.length == 1) {
+            int port = Integer.parseInt(args[0]);
+            Server server = new Server(port);
+            server.serverInit();
+        } else {
+            int port = Integer.parseInt(args[0]);
+            String adresseOtherServeur = args[1];
+            Server server = new Server(port);
+            server.serverInit();
+            ClientPOST clientServer = new ClientPOST(port);
+            clientServer.connexion(adresseOtherServeur);
         }
-        int port = Integer.parseInt(args[0]);
-        Server server = new Server(port);
-        server.serverInit();
-        }
+    }
 }
