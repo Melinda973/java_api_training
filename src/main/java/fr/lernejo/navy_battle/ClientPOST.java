@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
 
 import java.net.http.HttpRequest.BodyPublishers;
 import java.util.concurrent.CompletableFuture;
@@ -20,16 +21,26 @@ public class ClientPOST {
 
     public void connexion(String adrr) {
         System.out.println("Connexion to a second waiting server...");
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest requestPost = HttpRequest.newBuilder()
+        HttpRequest request = requestPost(adrr);
+        HashMap<String, String> reponse = respRequest(request);
+    }
+
+    public HttpRequest requestPost(String adrr) {
+        return HttpRequest.newBuilder()
             .uri(URI.create(adrr + "/api/game/start"))
             .setHeader("Accept", "application/json")
             .setHeader("Content-Type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString("{\"id\":\"1\", \"url\":\"http://localhost:" + port + "\", \"message\":\"hello\"}"))
             .build();
-        CompletableFuture<HttpResponse<String>> cf = client_server.sendAsync(requestPost, HttpResponse.BodyHandlers.ofString());
-        cf.thenApplyAsync(HttpResponse::headers).thenAcceptAsync(System.out::println);
-        HttpResponse<String> response = cf.join();
-        System.out.println("Response: " + response.statusCode() + " : " + response.body());
+    }
+
+    public HashMap<String, String> respRequest(HttpRequest req){
+        CompletableFuture<HttpResponse<String>> completableFuture = client_server.sendAsync(req, HttpResponse.BodyHandlers.ofString());
+        completableFuture.thenApplyAsync(HttpResponse::headers);
+        HttpResponse<String> response = completableFuture.join();
+        HashMap<String, String> reponseInfo = new HashMap<>();
+        reponseInfo.put("status", Integer.toString(response.statusCode()));
+        reponseInfo.put("body", response.body());
+        return reponseInfo;
     }
 }
