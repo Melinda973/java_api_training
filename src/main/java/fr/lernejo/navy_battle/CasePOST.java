@@ -26,7 +26,6 @@ public class CasePOST implements HttpHandler{
             sendResponse(exchange, "Not Found", 404);
         }
         else if (IsBodyOK(exchange.getRequestBody())) {
-            String body = bodyOK(exchange);
             sendResponse(exchange, "OK", 200);
         }
         else{

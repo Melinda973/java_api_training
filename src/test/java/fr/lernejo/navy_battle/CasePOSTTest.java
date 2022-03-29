@@ -18,7 +18,6 @@ class CasePOSTTest {
             Server server = new Server(9096);
             server.serverInit();
             HttpClient client = HttpClient.newHttpClient();
-            //post avec ok json
 
             HttpRequest requetePost = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:9096/api/game/start"))
@@ -29,10 +28,9 @@ class CasePOSTTest {
             CompletableFuture<HttpResponse<String>> completableFuturePOST = client.sendAsync(requetePost, HttpResponse.BodyHandlers.ofString());
             completableFuturePOST.thenApplyAsync(HttpResponse::headers);
             HttpResponse<String> responsePOST = completableFuturePOST.join();
-            Assertions.assertEquals(responsePOST.statusCode(),202);
+            Assertions.assertEquals(responsePOST.statusCode(),200);
             Assertions.assertEquals(responsePOST.body(),"{\"id\":\"xxx\",\"message\":\"Start ressus\",\"url\":\"http://localhost:9096\"}");
 
-            //autre post avec manque un parametre json
             HttpRequest requestPOSTManque = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:9096/api/game/start"))
                 .header("Accept", "application/json")
@@ -42,7 +40,6 @@ class CasePOSTTest {
                 .thenApplyAsync(HttpResponse::statusCode).join();
             Assertions.assertEquals(statusCodePOSTmanque,400);
 
-            //autre post avec movais json
             HttpRequest requestPUT = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:9096/api/game/start"))
                 .header("Accept", "application/json")
@@ -52,7 +49,6 @@ class CasePOSTTest {
                 .thenApplyAsync(HttpResponse::statusCode).join();
             Assertions.assertEquals(statusCodePUT,404);
 
-            //post avec movais json
             HttpRequest requestPOSTKO = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:9096/api/game/start"))
                 .header("Accept", "application/json")
@@ -62,9 +58,7 @@ class CasePOSTTest {
                 .thenApplyAsync(HttpResponse::statusCode).join();
             Assertions.assertEquals(statusCodePOSTKO,400);
 
-        }catch(Exception e) {
-
-        }
+        }catch(Exception e) {}
 
     }
 

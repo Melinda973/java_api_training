@@ -20,6 +20,7 @@ public class Server {
         server.setExecutor(Executors.newFixedThreadPool(1)); // creates an executor of 1 thread
         server.createContext("/ping", new PingHandler());
         server.createContext("/api/game/start", new CasePOST());
+        server.createContext("/api/game/fire", new FireGame());
         server.start();
     }
 }
