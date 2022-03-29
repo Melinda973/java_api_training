@@ -15,5 +15,6 @@ public class PingHandler implements HttpHandler {
         try (OutputStream os = exchange.getResponseBody()) { // (1)
             os.write(body.getBytes());
         }
+        exchange.close();
     }
 }
