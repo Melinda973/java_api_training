@@ -26,16 +26,15 @@ public class FireGame implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         if (!"GET".equals(exchange.getRequestMethod())) {
-            sendResponse(exchange, "Not Found", 404);
+            sendResponse(exchange, "", 404);
         }
         else if (IsBodyOK(exchange)) {
-            String body = buildBody("manqué...", false);
+            String body = buildBody("miss", false);
             sendResponse(exchange, body, 200);
         }
         else{
-            sendResponse(exchange, "Bad Request", 400);
+            sendResponse(exchange, "", 400);
         }
-        exchange.close();
     }
 
     private String buildBody(String consequence , boolean shipLeft) {
@@ -48,9 +47,11 @@ public class FireGame implements HttpHandler {
     private boolean IsBodyOK(HttpExchange exchange) {
         Map<String, String> params = new BuildMap().transform(exchange.getRequestURI().getQuery());
         if(params.get("cell") != null) {
-            String col = params.get("cell").substring(0,1); //from A to J
-            int line = Integer.parseInt(params.get("cell").substring(1,params.get("cell").length())); //from 1 to 10
-            return true;
+            try {
+                String col = params.get("cell").substring(0, 1); //from A to J
+                int line = Integer.parseInt(params.get("cell").substring(1, params.get("cell").length())); //from 1 to 10
+                return true;
+            }catch (Exception e){}
         }
         return false;
     }
