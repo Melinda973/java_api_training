@@ -31,7 +31,6 @@ public class CasePOST implements HttpHandler{
         else{
             sendResponse(exchange, "Bad Request", 400);
         }
-        exchange.close();
     }
 
     private String bodyOK(HttpExchange exchange) {
@@ -43,7 +42,7 @@ public class CasePOST implements HttpHandler{
         return object.toString();
     }
     private boolean IsBodyOK(InputStream bodyRequest) {
-        JSONObject json = inputStringTOJSON(bodyRequest);
+        JSONObject json = new JSON().StringToJSON(bodyRequest);
         if (json != null) {
             String id = json.getString("id");
             String url = json.getString("url");
@@ -53,22 +52,5 @@ public class CasePOST implements HttpHandler{
             }
         }
         return false;
-    }
-
-    public JSONObject inputStringTOJSON(InputStream inputStream) {
-        if (inputStream != null) {
-            try {
-                BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                StringBuilder responseStrBuilder = new StringBuilder();
-                String inputStr;
-                while ((inputStr = streamReader.readLine()) != null)
-                    responseStrBuilder.append(inputStr);
-                JSONObject jsonObject = new JSONObject(responseStrBuilder.toString());
-                return jsonObject;
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 }

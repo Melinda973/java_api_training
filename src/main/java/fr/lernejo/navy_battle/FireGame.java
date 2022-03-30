@@ -6,10 +6,8 @@ import com.sun.net.httpserver.HttpHandler;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class FireGame implements HttpHandler {
@@ -23,7 +21,6 @@ public class FireGame implements HttpHandler {
         }
     }
 
-    @Override
     public void handle(HttpExchange exchange) throws IOException {
         if (!"GET".equals(exchange.getRequestMethod())) {
             sendResponse(exchange, "", 404);

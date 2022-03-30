@@ -1,4 +1,3 @@
-
 package fr.lernejo.navy_battle;
 
 import java.util.HashMap;
@@ -6,10 +5,10 @@ import java.util.Map;
 
 public class BuildMap {
 
-    public Map<String, String> transform(String query) {
+    public Map<String, String> transform(String str) {
         Map<String, String> result = new HashMap<>();
         try {
-            for (String param : query.split("&")) {
+            for (String param : str.split("&")) {
                 String[] entry = param.split("=");
                 if (entry.length > 1) {
                     result.put(entry[0], entry[1]);

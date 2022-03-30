@@ -6,7 +6,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 
-import java.net.http.HttpRequest.BodyPublishers;
 import java.util.concurrent.CompletableFuture;
 
 public class ClientPOST {
@@ -30,12 +29,12 @@ public class ClientPOST {
             .uri(URI.create(adrr + "/api/game/start"))
             .setHeader("Accept", "application/json")
             .setHeader("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString("{\"id\":\"1\", \"url\":\"http://localhost:" + port + "\", \"message\":\"hello\"}"))
+            .POST(HttpRequest.BodyPublishers.ofString("{\"id\":\"1\", \"url\":\"http://localhost:" + this.port + "\", \"message\":\"hello\"}"))
             .build();
     }
 
     public HashMap<String, String> respRequest(HttpRequest req){
-        CompletableFuture<HttpResponse<String>> completableFuture = client_server.sendAsync(req, HttpResponse.BodyHandlers.ofString());
+        CompletableFuture<HttpResponse<String>> completableFuture = this.client_server.sendAsync(req, HttpResponse.BodyHandlers.ofString());
         completableFuture.thenApplyAsync(HttpResponse::headers);
         HttpResponse<String> response = completableFuture.join();
         HashMap<String, String> reponseInfo = new HashMap<>();

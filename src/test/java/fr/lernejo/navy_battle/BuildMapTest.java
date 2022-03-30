@@ -1,6 +1,5 @@
 package fr.lernejo.navy_battle;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
@@ -11,7 +10,7 @@ public class BuildMapTest {
     private final BuildMap BuildMap = new BuildMap();
 
     @Test
-    void inputStringTOJSON() {
+    void StringToJSON() {
         Map<String, String> vide = BuildMap.transform(null);
         Assertions.assertAll(
             () -> Assertions.assertNotNull(vide),
@@ -29,6 +28,5 @@ public class BuildMapTest {
             () -> Assertions.assertEquals(cell2.get("cell"), "B2"),
             () -> Assertions.assertEquals(cell2.get("ici"), "J10")
         );
-        //creer un input stream avec un json
     }
 }
