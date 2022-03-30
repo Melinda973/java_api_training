@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 public class PingHandlerTest {
 
     @org.junit.jupiter.api.Test
-    public void handle() {
+    void handle() {
         try {
             Server server = new Server(9095);
             server.serverInit();
