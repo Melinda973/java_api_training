@@ -3,6 +3,7 @@ package fr.lernejo.navy_battle;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
 
+import fr.lernejo.navy_battle.JsonUtil;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -43,8 +44,7 @@ public class CasePOST implements HttpHandler{
     }
 
     private boolean IsBodyOK(InputStream bodyRequest) {
-        JSONObject json = inputStringTOJSON(bodyRequest);
-        if (json != null) {
+        JSONObject json = new JsonUtil().inputStringTOJSON(bodyRequest);        if (json != null) {
             String id = json.getString("id");
             String url = json.getString("url");
             String message = json.getString("message");
@@ -53,22 +53,5 @@ public class CasePOST implements HttpHandler{
             }
         }
         return false;
-    }
-
-    public JSONObject inputStringTOJSON(InputStream inputStream) {
-        if (inputStream != null) {
-            try {
-                BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                StringBuilder responseStrBuilder = new StringBuilder();
-                String inputStr;
-                while ((inputStr = streamReader.readLine()) != null)
-                    responseStrBuilder.append(inputStr);
-                JSONObject jsonObject = new JSONObject(responseStrBuilder.toString());
-                return jsonObject;
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 }
