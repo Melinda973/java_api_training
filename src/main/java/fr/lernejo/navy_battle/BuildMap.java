@@ -17,4 +17,20 @@ public class BuildMap {
         }catch (Exception e) {}
         return result;
     }
+
+    public HashMap<String, String> jsonToMap(String json) {
+        HashMap<String, String> result = new HashMap<>();
+        try {
+            json = json.replace("{", "");
+            json = json.replace("}", "");
+            json = json.replace("\"", "");
+            for (String param : json.split(",")) {
+                String[] entry = param.split(":");
+                if (entry.length > 1) {
+                    result.put(entry[0], entry[1]);
+                }
+            }
+        }catch (Exception e) {}
+        return result;
+    }
 }

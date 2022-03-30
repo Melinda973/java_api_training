@@ -8,19 +8,25 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
-    private final int port;
+    private final Util data;
+    private final Jeu jeu;
 
-    public Server(int port) {
-        this.port = port;
+    public Server(Util data, Jeu jeu) {
+        this.data = data;
+        this.jeu = jeu;
     }
 
     public void serverInit() throws IOException {
-        System.out.println("Server initialization");
-        HttpServer server = HttpServer.create(new InetSocketAddress(this.port), 0);
-        server.setExecutor(Executors.newFixedThreadPool(1)); // creates an executor of 1 thread
-        server.createContext("/ping", new PingHandler());
-        server.createContext("/api/game/start", new CasePOST());
-        server.createContext("/api/game/fire", new FireGame());
-        server.start();
+        System.out.println("Initialisation de mon serveur sur le port ; " + this.data.getData("monPort"));
+        InetSocketAddress addrToBind = new InetSocketAddress(Integer.parseInt(this.data.getData("monPort")));
+        try {
+            HttpServer httpSrv = HttpServer.create(addrToBind, 0);
+            httpSrv.setExecutor(Executors.newFixedThreadPool(1));
+            httpSrv.createContext("/ping", new PingHandler());
+            httpSrv.createContext("/api/game/start", new CasePOST(this.data));
+            httpSrv.createContext("/api/game/fire", new FireGame(this.data, this.jeu));
+            httpSrv.start();
+        }catch (Exception e) {}
+
     }
 }

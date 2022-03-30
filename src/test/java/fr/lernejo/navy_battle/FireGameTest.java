@@ -1,81 +1,57 @@
 package fr.lernejo.navy_battle;
 
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.concurrent.CompletableFuture;
 
 class FireGameTest {
 
-    @org.junit.jupiter.api.Test
-    void FireGameGood() throws IOException, InterruptedException {
-        Server server= new Server(5002);
-        server.serverInit();
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:5002/api/game/fire?cell=F2"))
-            .setHeader("Accept", "application/json")
-            .setHeader("Content-Type", "application/json")
-            .GET()
-            .build();
-        HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
-        int expected = HttpURLConnection.HTTP_OK;
-        int result = resp.statusCode();
-        Assertions.assertThat(result).as("Response should be 200 OK").isEqualTo(expected);
-    }
+    @Test
+    void handle() {
+        try {
+            Util data = new Util();
+            data.addData("monPort", "9097");
+                ClientPOST clientServeur = new ClientPOST(data);
+            Jeu jeu = new Jeu(clientServeur, data);
+            Server server = new Server(data, jeu);
+            server.serverInit();
+            HttpClient client = HttpClient.newHttpClient();
 
-    @org.junit.jupiter.api.Test
-    void FireGameFails() throws IOException, InterruptedException {
-        Server server = new Server(5003);
-        server.serverInit();
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:5003/api/game/fire"))
-            .setHeader("Accept", "application/json")
-            .setHeader("Content-Type", "application/json")
-            .GET()
-            .build();
-        HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
-        int expected = HttpURLConnection.HTTP_BAD_REQUEST;
-        int result = resp.statusCode();
-        Assertions.assertThat(result).as("Response should be 400 Bad Request").isEqualTo(expected);
-    }
+            HttpRequest requeteGet = HttpRequest.newBuilder().uri(URI.create("http://localhost:9097/api/game/fire?cell=B2")).build();
+            CompletableFuture<HttpResponse<String>> completableFutureGet = client.sendAsync(requeteGet, HttpResponse.BodyHandlers.ofString());
+            completableFutureGet.thenApplyAsync(HttpResponse::headers);
+            HttpResponse<String> responseGET = completableFutureGet.join();
+            org.junit.jupiter.api.Assertions.assertEquals(responseGET.statusCode(), 202);
+            org.junit.jupiter.api.Assertions.assertEquals(data.getData("caseAdverseVisit"), "B2");
 
-    @org.junit.jupiter.api.Test
-    void FireGameFails2() throws IOException, InterruptedException {
-        Server server = new Server(5004);
-        server.serverInit();
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:5004/api/game/fire?cell"))
-            .setHeader("Accept", "application/json")
-            .setHeader("Content-Type", "application/json")
-            .GET()
-            .build();
-        HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
-        int expected = HttpURLConnection.HTTP_BAD_REQUEST;
-        int result = resp.statusCode();
-        Assertions.assertThat(result).as("Response should be 400 Bad Request").isEqualTo(expected);
-    }
+            HttpRequest requestPUT = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:9097/api/game/fire"))
+                .header("Accept", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString("ping!"))
+                .build();
+            int statusCodePUT = client.sendAsync(requestPUT, HttpResponse.BodyHandlers.ofString()).thenApplyAsync(HttpResponse::statusCode).join();
+            org.junit.jupiter.api.Assertions.assertEquals(statusCodePUT, 404);
 
-    @org.junit.jupiter.api.Test
-    void BadFireGame() throws IOException, InterruptedException {
-        Server server = new Server(5005);
-        server.serverInit();
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:5005/api/game/fire?cell=F2"))
-            .setHeader("Accept", "application/json")
-            .setHeader("Content-Type", "application/json")
-            .DELETE()
-            .build();
-        HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
-        int expected = HttpURLConnection.HTTP_NOT_FOUND;
-        int result = resp.statusCode();
-        Assertions.assertThat(result).as("Response should be 404 Not Found").isEqualTo(expected);
+            HttpRequest requeteGetErr = HttpRequest.newBuilder().uri(URI.create("http://localhost:9097/api/game/fire?cell=BI2")).build();
+            CompletableFuture<HttpResponse<String>> completableFutureGetErr = client.sendAsync(requeteGetErr, HttpResponse.BodyHandlers.ofString());
+            completableFutureGetErr.thenApplyAsync(HttpResponse::headers);
+            HttpResponse<String> responseGETErr = completableFutureGetErr.join();
+            org.junit.jupiter.api.Assertions.assertEquals(responseGETErr.statusCode(), 400);
+
+
+            HttpRequest requestGetManque = HttpRequest.newBuilder().uri(URI.create("http://localhost:9097/api/game/fire")).build();
+            int statusCodeGetmanque = client.sendAsync(requestGetManque, HttpResponse.BodyHandlers.ofString()).thenApplyAsync(HttpResponse::statusCode).join();
+            org.junit.jupiter.api.Assertions.assertEquals(statusCodeGetmanque, 400);
+
+
+            HttpRequest requestGetKO = HttpRequest.newBuilder().uri(URI.create("http://localhost:9097/api/game/fire?ici=B2")).build();
+            int statusCodeGetKO = client.sendAsync(requestGetKO, HttpResponse.BodyHandlers.ofString()).thenApplyAsync(HttpResponse::statusCode).join();
+            Assertions.assertEquals(statusCodeGetKO, 400);
+        } catch (Exception e) {}
     }
 }

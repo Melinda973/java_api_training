@@ -3,7 +3,7 @@ package fr.lernejo.navy_battle;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Grid{
+public class Set {
     public int coloneinInt(char lettre) {
         int ascii = lettre;
         if(ascii > 64 && ascii <75) {
@@ -29,7 +29,7 @@ public class Grid{
         return false;
     }
 
-    public Map<String, Integer>  dissocierCase(String p_postion) {
+    public Map<String, Integer> dissocierCase(String p_postion) {
         int collone = this.coloneinInt(p_postion.charAt(0));
         int ligne = Integer.parseInt(p_postion.substring(1,p_postion.length()));
         Map<String, Integer> dissocier = new HashMap<String, Integer>();

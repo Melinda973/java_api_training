@@ -10,31 +10,40 @@ import java.util.concurrent.CompletableFuture;
 
 public class ClientPOST {
 
-    private final int port;
+    private final Util data;
     private final HttpClient client_server;
 
-    public ClientPOST(int port) {
-        this.port = port;
+    public ClientPOST(Util data) {
+        this.data = data;
         this.client_server = HttpClient.newHttpClient();
     }
 
-    public void connexion(String adrr) {
-        System.out.println("Connexion to a second waiting server...");
-        HttpRequest request = requestPost(adrr);
-        HashMap<String, String> reponse = respRequest(request);
+    public void connect() {
+        System.out.println("Connection au deuxieme serveur sur : " + this.data.getData("adresseOtherServeur"));
+        HttpRequest requetePost = creationRequestPostStart();
+        makeReponseRequest(requetePost);
     }
 
-    public HttpRequest requestPost(String adrr) {
+    public HashMap<String, String> fireOther(String p_otherAdress, String p_choixCase) {
+        HttpRequest requeteGet = creationRequestGetFire(p_otherAdress, p_choixCase);
+
+        return makeReponseRequest(requeteGet);
+    }
+
+    public HttpRequest creationRequestPostStart() {
         return HttpRequest.newBuilder()
-            .uri(URI.create(adrr + "/api/game/start"))
+            .uri(URI.create(this.data.getData("adresseOtherServeur") + "/api/game/start"))
             .setHeader("Accept", "application/json")
             .setHeader("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString("{\"id\":\"1\", \"url\":\"http://localhost:" + this.port + "\", \"message\":\"hello\"}"))
+            .POST(HttpRequest.BodyPublishers.ofString("{\"id\":\"1\", \"url\":\"http://localhost:" + this.data.getData("monPort") + "\", \"message\":\"hello\"}"))
             .build();
     }
+    public HttpRequest creationRequestGetFire(String p_otherAdress, String p_choixCase) {
+        return HttpRequest.newBuilder().uri(URI.create(p_otherAdress + "/api/game/fire?cell=" + p_choixCase)).build();
+    }
 
-    public HashMap<String, String> respRequest(HttpRequest req){
-        CompletableFuture<HttpResponse<String>> completableFuture = this.client_server.sendAsync(req, HttpResponse.BodyHandlers.ofString());
+    public HashMap<String, String> makeReponseRequest(HttpRequest p_requetePost){
+        CompletableFuture<HttpResponse<String>> completableFuture = this.client_server.sendAsync(p_requetePost, HttpResponse.BodyHandlers.ofString());
         completableFuture.thenApplyAsync(HttpResponse::headers);
         HttpResponse<String> response = completableFuture.join();
         HashMap<String, String> reponseInfo = new HashMap<>();

@@ -12,6 +12,17 @@ import java.util.Map;
 
 public class FireGame implements HttpHandler {
 
+    private final Util data;
+    private final Jeu jeu;
+    private final Game game = new Game();
+
+    public FireGame(Util data, Jeu jeu) {
+        super();
+        this.data = data;
+        this.jeu = jeu;
+
+    }
+
     public void sendResponse(HttpExchange exchange, String body, int rCode) throws IOException {
         exchange.getResponseHeaders().set("Accept", "application/json");
         exchange.getResponseHeaders().set("Content-Type", "application/json");
