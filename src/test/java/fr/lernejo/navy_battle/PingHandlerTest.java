@@ -11,13 +11,34 @@ import java.util.concurrent.CompletableFuture;
 public class PingHandlerTest {
 
     @org.junit.jupiter.api.Test
-    void handle() {
+    public void handle() {
         try {
             Server server = new Server(9095);
             server.serverInit();
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:9095/ping"))
+                .header("Accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("ping!"))
+                .build();
+            CompletableFuture<HttpResponse<String>> completableFuture = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+            completableFuture
+                .thenApplyAsync(HttpResponse::headers);
+            HttpResponse<String> response = completableFuture.join();
+            Assertions.assertEquals(response.statusCode(), 200);
+            Assertions.assertEquals(response.body(), "OK");
+        } catch (Exception e) {
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    public void connexionOK() {
+        try {
+            Server server = new Server(9870);
+            server.serverInit();
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:9870/ping"))
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString("ping!"))
                 .build();
