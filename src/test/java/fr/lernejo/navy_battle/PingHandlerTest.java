@@ -9,7 +9,7 @@ import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
 
 public class PingHandlerTest {
-    
+
     @org.junit.jupiter.api.Test
     void handle() {
         try {
