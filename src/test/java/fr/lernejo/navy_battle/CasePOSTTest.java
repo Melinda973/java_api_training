@@ -9,7 +9,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.util.concurrent.CompletableFuture;
 
-class CasePOSTTest {
+public class CasePOSTTest {
 
     @org.junit.jupiter.api.Test
     void handle() {
@@ -27,8 +27,8 @@ class CasePOSTTest {
             CompletableFuture<HttpResponse<String>> completableFuturePOST = client.sendAsync(requetePost, HttpResponse.BodyHandlers.ofString());
             completableFuturePOST.thenApplyAsync(HttpResponse::headers);
             HttpResponse<String> responsePOST = completableFuturePOST.join();
-            Assertions.assertEquals(responsePOST.statusCode(),202);
-            Assertions.assertEquals(responsePOST.body(),"{\"id\":\"xxx\",\"message\":\"Start ressus\",\"url\":\"http://localhost:9096\"}");
+            Assertions.assertEquals(responsePOST.statusCode(), 202);
+            Assertions.assertEquals(responsePOST.body(), "{\"id\":\"xxx\",\"message\":\"Start ressus\",\"url\":\"http://localhost:9096\"}");
 
             HttpRequest requestPOSTManque = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:9096/api/game/start"))
@@ -37,7 +37,7 @@ class CasePOSTTest {
                 .build();
             int statusCodePOSTmanque = client.sendAsync(requestPOSTManque, HttpResponse.BodyHandlers.ofString())
                 .thenApplyAsync(HttpResponse::statusCode).join();
-            Assertions.assertEquals(statusCodePOSTmanque,400);
+            Assertions.assertEquals(statusCodePOSTmanque, 400);
 
             HttpRequest requestPUT = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:9096/api/game/start"))
@@ -46,7 +46,7 @@ class CasePOSTTest {
                 .build();
             int statusCodePUT = client.sendAsync(requestPUT, HttpResponse.BodyHandlers.ofString())
                 .thenApplyAsync(HttpResponse::statusCode).join();
-            Assertions.assertEquals(statusCodePUT,404);
+            Assertions.assertEquals(statusCodePUT, 404);
 
             HttpRequest requestPOSTKO = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:9096/api/game/start"))
@@ -55,8 +55,7 @@ class CasePOSTTest {
                 .build();
             int statusCodePOSTKO = client.sendAsync(requestPOSTKO, HttpResponse.BodyHandlers.ofString())
                 .thenApplyAsync(HttpResponse::statusCode).join();
-            Assertions.assertEquals(statusCodePOSTKO,400);
-
-        }catch(Exception e) {}
+            Assertions.assertEquals(statusCodePOSTKO, 400);
+        } catch (Exception e) {}
     }
 }
